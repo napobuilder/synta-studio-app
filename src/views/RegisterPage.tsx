@@ -8,11 +8,14 @@ const RegisterPage: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState<{ type: 'error' | 'success'; text: string } | null>(null);
     const navigate = useNavigate();
 
     const handleRegister = async (event: React.FormEvent) => {
         event.preventDefault();
         setLoading(true);
+        setMessage(null);
+
         const { error } = await supabase.auth.signUp({
             email,
             password,
@@ -24,10 +27,11 @@ const RegisterPage: React.FC = () => {
         });
 
         if (error) {
-            alert(error.message);
+            setMessage({ type: 'error', text: error.message });
         } else {
-            alert('¡Registro exitoso! Revisa tu bandeja de entrada para verificar tu correo electrónico.');
-            navigate('/login');
+            setMessage({ type: 'success', text: '¡Registro exitoso! Revisa tu bandeja de entrada para verificar tu correo electrónico.' });
+            // No redirigir inmediatamente para que el usuario pueda ver el mensaje.
+            // setTimeout(() => navigate('/login'), 5000); 
         }
         setLoading(false);
     };
@@ -41,7 +45,14 @@ const RegisterPage: React.FC = () => {
                 </div>
                 <div className="bg-white p-8 rounded-xl shadow-md">
                     <h1 className="text-2xl font-bold text-gray-800 mb-2">Crea tu Cuenta</h1>
-                    <p className="text-gray-500 mb-8">Únete a la comunidad gratuita para Coaches y Marcas Personales.</p>
+                    <p className="text-gray-500 mb-6">Únete a la comunidad gratuita para Coaches y Marcas Personales.</p>
+                    
+                    {message && (
+                        <div className={`p-4 mb-4 rounded-lg text-center ${message.type === 'error' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
+                            {message.text}
+                        </div>
+                    )}
+
                     <form onSubmit={handleRegister} className="space-y-4">
                         <input
                             type="text"
@@ -61,7 +72,7 @@ const RegisterPage: React.FC = () => {
                         />
                         <input
                             type="password"
-                            placeholder="Crea una contraseña"
+                            placeholder="Crea una contraseña (mín. 6 caracteres)"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
