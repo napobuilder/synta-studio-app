@@ -35,7 +35,7 @@ const ChatPanel: React.FC = () => {
         try {
             const systemMessage: Message | undefined = activeSystemPrompt ? { role: 'system', content: activeSystemPrompt } : undefined;
             
-            const conversationMessages = chatMessages.filter(m => m.role !== 'status');
+            const conversationMessages = chatMessages.filter((m: Message) => m.role !== 'status');
 
             const messageHistory = [
                 ...(systemMessage ? [systemMessage] : []),
@@ -117,7 +117,7 @@ const ChatPanel: React.FC = () => {
                 </header>
 
                 <main className="flex-1 p-4 space-y-6 overflow-y-auto bg-gray-50">
-                    {chatMessages.map((msg, index) => {
+                    {chatMessages.map((msg: Message, index: number) => {
                         if (msg.role === 'status') {
                             return (
                                 <div key={index} className="flex items-center justify-center gap-2 text-sm text-gray-500 my-4">

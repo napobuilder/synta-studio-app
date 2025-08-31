@@ -2,6 +2,7 @@ import React, { useEffect, useMemo } from 'react';
 import { useStore } from '../store/useStore';
 import { PromptCard } from '../components/PromptCard';
 import { Search } from 'lucide-react';
+import type { Prompt } from '../types';
 
 export const SyntaLabView: React.FC = () => {
     // Obtenemos el estado y las acciones del store
@@ -21,17 +22,17 @@ export const SyntaLabView: React.FC = () => {
 
     const categories = useMemo(() => {
         if (!prompts) return ['Todos'];
-        return ['Todos', ...new Set(prompts.map(p => p.category).filter(Boolean))];
+        return ['Todos', ...new Set(prompts.map((p: Prompt) => p.category).filter(Boolean))];
     }, [prompts]);
     
     const filteredPrompts = useMemo(() => {
         if (!prompts) return [];
-        return prompts.filter(prompt => {
+        return prompts.filter((prompt: Prompt) => {
             const matchesCategory = activeCategory === 'Todos' || prompt.category === activeCategory;
             const matchesSearch = searchTerm === '' || 
                                   prompt.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
                                   prompt.description.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                                  (prompt.tags && prompt.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())));
+                                  (prompt.tags && prompt.tags.some((tag: string) => tag.toLowerCase().includes(searchTerm.toLowerCase())));
             return matchesCategory && matchesSearch;
         });
     }, [prompts, searchTerm, activeCategory]);
@@ -55,7 +56,7 @@ export const SyntaLabView: React.FC = () => {
                     />
                 </div>
                 <div className="flex flex-wrap gap-2">
-                    {categories.map(category => (
+                    {categories.map((category: string) => (
                         <button 
                             key={category} 
                             onClick={() => setActiveCategory(category)} 
@@ -69,7 +70,7 @@ export const SyntaLabView: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
                 {filteredPrompts.length > 0 ? (
-                    filteredPrompts.map((prompt) => <PromptCard key={prompt.id} prompt={prompt} />)
+                    filteredPrompts.map((prompt: Prompt) => <PromptCard key={prompt.id} prompt={prompt} />)
                 ) : (
                     <p className="md:col-span-3 text-center text-gray-500">No se encontraron prompts que coincidan con tu búsqueda.</p>
                 )}

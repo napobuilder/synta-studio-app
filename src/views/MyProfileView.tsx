@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useStore } from '../store/useStore';
 import { PostCard } from '../components/PostCard';
 import { Camera, Save, X } from 'lucide-react';
+import type { CommunityPost } from '../types';
 
 const DEFAULT_AVATAR_SVG_DATA_URI = "data:image/svg+xml,%3csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3e%3cdefs%3e%3clinearGradient id='avatar-gradient' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3e%3cstop offset='0%25' stop-color='%237C3AED' /%3e%3cstop offset='100%25' stop-color='%233B82F6' /%3e%3c/linearGradient%3e%3c/defs%3e%3cpath d='M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z' fill='url(%23avatar-gradient)'/%3e%3cpath d='M12 6C13.66 6 15 7.34 15 9C15 10.66 13.66 12 12 12C10.34 12 9 10.66 9 9C9 7.34 10.34 6 12 6ZM12 20C10.18 20 8.55 19.23 7.3 17.99C7.35 15.99 10.69 14.9 12 14.9C13.31 14.9 16.65 15.99 16.7 17.99C15.45 19.23 13.82 20 12 20Z' fill='white'/%3e%3c/svg%3e";
 
@@ -80,7 +81,7 @@ export const MyProfileView: React.FC = () => {
         return <div className="p-6 text-center text-gray-600">Inicia sesión para ver tu perfil.</div>;
     }
 
-    const userPosts = communityPosts.filter(p => p.userId === userProfile.id);
+    const userPosts = communityPosts.filter((p: CommunityPost) => p.userId === userProfile.id);
 
     const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
@@ -150,24 +151,25 @@ export const MyProfileView: React.FC = () => {
                         </div>
                         <div className="ml-4 flex-grow">
                             {isEditing ? (
-                                <input
-                                    type="text"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    className="w-full bg-transparent text-3xl font-bold text-gray-800 border-b-2 border-gray-300 focus:border-purple-500 outline-none"
-                                />
+                                <div>
+                                    <input
+                                        type="text"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        className="w-full bg-transparent text-3xl font-bold text-gray-800 border-b-2 border-gray-300 focus:border-purple-500 outline-none"
+                                    />
+                                    <input
+                                        type="text"
+                                        value={title}
+                                        onChange={(e) => setTitle(e.target.value)}
+                                        className="w-full bg-transparent text-lg text-gray-500 border-b-2 border-gray-300 focus:border-purple-500 outline-none mt-1"
+                                    />
+                                </div>
                             ) : (
-                                <h1 className="text-3xl font-bold text-white">{userProfile.full_name || 'Nombre no especificado'}</h1>
-                            )}
-                            {isEditing ? (
-                                <input
-                                    type="text"
-                                    value={title}
-                                    onChange={(e) => setTitle(e.target.value)}
-                                    className="w-full bg-transparent text-lg text-gray-500 border-b-2 border-gray-300 focus:border-purple-500 outline-none mt-1"
-                                />
-                            ) : (
-                                <p className="text-lg text-gray-600">{userProfile.title || 'Título no especificado'}</p>
+                                <div>
+                                    <h1 className="text-3xl font-bold text-gray-800">{userProfile.full_name || 'Nombre no especificado'}</h1>
+                                    <p className="text-lg text-gray-600">{userProfile.title || 'Título no especificado'}</p>
+                                </div>
                             )}
                         </div>
                         <div className="flex gap-2 ml-4">
@@ -201,7 +203,7 @@ export const MyProfileView: React.FC = () => {
                         <h2 className="text-2xl font-bold text-gray-800 mb-6">Mis Publicaciones</h2>
                         {userPosts.length > 0 ? (
                             <div className="space-y-6">
-                                {userPosts.map(post => (
+                                {userPosts.map((post: CommunityPost) => (
                                     <PostCard key={post.id} post={post} />
                                 ))}
                             </div>

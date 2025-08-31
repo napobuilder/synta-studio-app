@@ -1,9 +1,10 @@
 import { create } from 'zustand';
+import type { StateCreator } from 'zustand';
 import type { Session } from '@supabase/supabase-js';
 import { supabase } from '../supabaseClient';
-import type { Prompt, CommunityPost, CommunityUser, UserProfile, Message, Product, CartItem } from '../types';
+import type { Prompt, CommunityPost, CommunityUser, UserProfile, Message, Product, CartItem, Comment, Like } from '../types';
 
-interface AppState {
+export interface AppState {
   // Auth
   session: Session | null;
   isAuthLoading: boolean;
@@ -63,7 +64,7 @@ interface AppState {
   clearCart: () => void;
 }
 
-export const useStore = create<AppState>((set, get) => ({
+const stateCreator: StateCreator<AppState> = (set, get) => ({
   // Auth
   session: null,
   isAuthLoading: true,
@@ -130,7 +131,6 @@ export const useStore = create<AppState>((set, get) => ({
   communityUsers: [],
   communityPosts: [],
   fetchCommunityData: async () => {
-    // 1. Fetch all necessary data in parallel
     const [postsResponse, usersResponse, commentsResponse, likesResponse] = await Promise.all([
       supabase.from('posts').select('*').order('created_at', { ascending: false }),
       supabase.from('profiles').select('*'),
@@ -138,37 +138,33 @@ export const useStore = create<AppState>((set, get) => ({
       supabase.from('likes').select('*')
     ]);
 
-    // 2. Handle potential errors
     if (postsResponse.error) console.error('Error fetching posts:', postsResponse.error);
     if (usersResponse.error) console.error('Error fetching users:', usersResponse.error);
     if (commentsResponse.error) console.error('Error fetching comments:', commentsResponse.error);
     if (likesResponse.error) console.error('Error fetching likes:', likesResponse.error);
 
-    // 3. Create a map for efficient lookups
-    const usersMap = new Map((usersResponse.data || []).map(user => [user.id, user]));
-    const defaultAuthor = { id: 'unknown', full_name: 'Usuario Desconocido', avatar_url: '/assets/default-avatar.svg' };
+    const usersMap = new Map((usersResponse.data || []).map((user: CommunityUser) => [user.id, user]));
+    const defaultAuthor: CommunityUser = { id: 'unknown', full_name: 'Usuario Desconocido', avatar_url: '/assets/default-avatar.svg', username: 'desconocido', level: 0, points: 0, title: null, email: null };
 
-    // 4. Process and enrich the data
-    const posts = (postsResponse.data || []).map(post => {
+    const posts = (postsResponse.data || []).map((post: CommunityPost) => {
       const author = usersMap.get(post.user_id) || defaultAuthor;
       
       const comments = (commentsResponse.data || [])
-        .filter(comment => comment.post_id === post.id)
-        .map(comment => ({
+        .filter((comment: Comment) => comment.post_id === post.id)
+        .map((comment: Comment) => ({
           ...comment,
           author: usersMap.get(comment.user_id) || defaultAuthor
         }));
 
-      const likes = (likesResponse.data || []).filter(like => like.post_id === post.id);
+      const likes = (likesResponse.data || []).filter((like: Like) => like.post_id === post.id);
 
-      // Correctly map database columns to application state properties
       return {
         ...post,
-        userId: post.user_id, // Map user_id to userId
+        userId: post.userId,
         author,
         comments,
         likes: likes.length,
-        likedBy: likes.map(like => like.user_id),
+        likedBy: likes.map((like: Like) => like.user_id),
       };
     });
 
@@ -178,7 +174,6 @@ export const useStore = create<AppState>((set, get) => ({
     });
   },
   addPost: async (post) => {
-    // Corregido: Se elimina la columna 'channel' que no existe en la BD
     const { title, content, userId } = post;
     const { error } = await supabase.from('posts').insert({ title, content, user_id: userId });
     if (error) console.error('Error adding post:', error);
@@ -206,7 +201,7 @@ export const useStore = create<AppState>((set, get) => ({
     get().fetchCommunityData();
   },
   addComment: async (postId, comment) => {
-    const { error } = await supabase.from('comments').insert({ ...comment, post_id: postId });
+    const { error } = await supabase.from('comments').insert({ content: comment.content, user_id: comment.userId, post_id: postId });
     if (error) console.error('Error adding comment:', error);
     else get().fetchCommunityData();
   },
@@ -283,4 +278,6 @@ export const useStore = create<AppState>((set, get) => ({
     cart: state.cart.filter(item => item.product.id !== productId)
   })),
   clearCart: () => set({ cart: [] }),
-}));
+});
+
+export const useStore = create(stateCreator);

@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { supabase } from '../supabaseClient';
 import { UserCircle, LogOut, ChevronUp, Menu, ShoppingCart } from 'lucide-react';
+import type { CartItem } from '../types';
 
 const Header: React.FC = () => {
     const {
@@ -16,7 +17,7 @@ const Header: React.FC = () => {
     
     const menuRef = useRef<HTMLDivElement>(null);
 
-    const cartItemCount = cart.reduce((count, item) => count + item.quantity, 0);
+    const cartItemCount = cart.reduce((count: number, item: CartItem) => count + item.quantity, 0);
 
     const handleLogout = async () => {
         toggleUserMenu(false);

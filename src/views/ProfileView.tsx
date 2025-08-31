@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useStore } from '../store/useStore';
+import type { AppState } from '../store/useStore';
 import { PostCard } from '../components/PostCard';
 import { supabase } from '../supabaseClient';
-import type { UserProfile } from '../types';
+import type { UserProfile, CommunityPost } from '../types';
 
 export const ProfileView: React.FC = () => {
     const { userId } = useParams<{ userId: string }>();
     const [viewedProfile, setViewedProfile] = useState<UserProfile | null>(null);
     const [loading, setLoading] = useState(true);
 
-    const communityPosts = useStore(state => state.communityPosts);
-    const fetchCommunityData = useStore(state => state.fetchCommunityData);
+    const communityPosts = useStore((state: AppState) => state.communityPosts);
+    const fetchCommunityData = useStore((state: AppState) => state.fetchCommunityData);
 
     // Efecto para cargar el perfil del usuario que se está viendo
     useEffect(() => {
@@ -46,7 +47,7 @@ export const ProfileView: React.FC = () => {
         }
     }, [communityPosts.length, fetchCommunityData]); // <- Dependencias correctas
 
-    const userPosts = communityPosts.filter(p => p.userId === userId);
+    const userPosts = communityPosts.filter((p: CommunityPost) => p.userId === userId);
 
     if (loading) {
         return <div className="p-6 text-center text-gray-600">Cargando perfil...</div>;
@@ -94,7 +95,7 @@ export const ProfileView: React.FC = () => {
                         <h2 className="text-2xl font-bold text-gray-800 mb-6">Publicaciones Recientes</h2>
                         {userPosts.length > 0 ? (
                             <div className="space-y-6">
-                                {userPosts.map(post => (
+                                {userPosts.map((post: CommunityPost) => (
                                     <PostCard key={post.id} post={post} />
                                 ))}
                             </div>

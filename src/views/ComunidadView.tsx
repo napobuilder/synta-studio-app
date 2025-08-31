@@ -3,6 +3,7 @@ import { useStore } from '../store/useStore';
 import { PostCard } from '../components/PostCard';
 import { Leaderboard } from '../components/Leaderboard';
 import { CreatePostForm } from '../components/CreatePostForm';
+import type { CommunityPost } from '../types';
 
 export const ComunidadView: React.FC = () => {
     const { communityPosts, fetchCommunityData } = useStore();
@@ -41,7 +42,7 @@ export const ComunidadView: React.FC = () => {
                                 <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-purple-500"></div>
                             </div>
                         ) : communityPosts.length > 0 ? (
-                            communityPosts.map(post => (
+                            communityPosts.map((post: CommunityPost) => (
                                 <PostCard key={post.id} post={post} />
                             ))
                         ) : (

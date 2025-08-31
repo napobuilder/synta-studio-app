@@ -2,6 +2,7 @@ import React from 'react';
 import { useStore } from '../store/useStore';
 import { NavLink } from 'react-router-dom';
 import { FlaskConical, Users, ShoppingCart, ArrowRight } from 'lucide-react';
+import type { CommunityPost } from '../types';
 
 export const InicioView: React.FC = () => {
   const { userProfile, communityPosts } = useStore();
@@ -41,7 +42,7 @@ export const InicioView: React.FC = () => {
       <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
         <h3 className="text-xl font-bold text-gray-800 mb-4">Actividad Reciente en la Comunidad</h3>
         <div className="space-y-4">
-          {recentPosts.length > 0 ? recentPosts.map(post => (
+          {recentPosts.length > 0 ? recentPosts.map((post: CommunityPost) => (
             <NavLink key={post.id} to={`/app/comunidad`} className="block p-4 rounded-lg hover:bg-gray-50 transition-colors">
               <p className="font-bold text-gray-800 truncate">{post.title}</p>
               <p className="text-sm text-gray-500">en el canal #{post.channel}</p>

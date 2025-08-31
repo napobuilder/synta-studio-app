@@ -1,6 +1,7 @@
 import React from 'react';
 import { useStore } from '../store/useStore';
 import { X, Trash2 } from 'lucide-react';
+import type { CartItem } from '../types';
 
 export const CartPanel: React.FC = () => {
   const {
@@ -12,7 +13,7 @@ export const CartPanel: React.FC = () => {
   } = useStore();
 
   const totalPrice = cart.reduce(
-    (total, item) => total + item.product.price * item.quantity,
+    (total: number, item: CartItem) => total + item.product.price * item.quantity,
     0
   );
 
@@ -41,7 +42,7 @@ export const CartPanel: React.FC = () => {
           </div>
         ) : (
           <div className="flex-1 overflow-y-auto p-6 space-y-4">
-            {cart.map(item => (
+            {cart.map((item: CartItem) => (
               <div key={item.product.id} className="flex items-center gap-4 p-4 border rounded-lg">
                 <img 
                   src={item.product.imageUrl} 

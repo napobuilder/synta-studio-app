@@ -21,6 +21,7 @@ export interface Product {
 
 export interface CommunityUser {
   id: string;
+  username: string;
   full_name: string | null;
   avatar_url: string | null;
   level: number | null;
@@ -41,6 +42,8 @@ export interface UserProfile {
 
 export interface Comment {
   id: number;
+  post_id: number;
+  user_id: string;
   userId: string;
   content: string;
   created_at: string;
@@ -49,6 +52,7 @@ export interface Comment {
 
 export interface CommunityPost {
   id: number;
+  user_id: string;
   userId: string;
   channel: string;
   title: string;
@@ -72,6 +76,12 @@ export type Message = {
   role: 'user' | 'assistant' | 'system' | 'status';
   content: string;
 };
+
+export interface Like {
+    id: number;
+    post_id: number;
+    user_id: string;
+}
 
 // Tipos para el carrito de compras
 export interface CartItem {

@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { supabase } from '../supabaseClient';
+import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
 
 /**
  * Este componente es el nuevo corazón de la autenticación.
@@ -16,7 +17,7 @@ const SessionHandler: React.FC = () => {
     console.log('[DEBUG] SessionHandler.tsx useEffect RUNS');
     setAuthLoading(true);
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event: AuthChangeEvent, session: Session | null) => {
       console.log(`[DEBUG] onAuthStateChange FIRED! Event: ${event}`, session);
       
       setSession(session);
