@@ -27,7 +27,7 @@ export const Leaderboard: React.FC = () => {
                         <Link to={`/app/profile/${user.id}`} className="flex-shrink-0">
                             <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200">
                                 <img 
-                                    src={user.avatar_url || '/assets/default-avatar.svg'} 
+                                    src={user.avatar_url || ''} 
                                     alt={user.full_name || 'Avatar'} 
                                     className="w-full h-full object-cover" 
                                 />

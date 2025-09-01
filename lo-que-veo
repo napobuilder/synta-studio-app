@@ -1,0 +1,6 @@
+
+BEGIN
+  INSERT INTO public.profiles (id, email, avatar_url)
+  VALUES (new.id, new.email, '/assets/default-avatar.svg');
+  RETURN new;
+END;

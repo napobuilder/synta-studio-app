@@ -192,13 +192,44 @@ const stateCreator: StateCreator<AppState> = (set, get) => ({
     }
   },
   toggleLikePost: async (postId, userId) => {
-    const { data } = await supabase.from('likes').select('*').eq('post_id', postId).eq('user_id', userId);
-    if (data && data.length > 0) {
-      await supabase.from('likes').delete().eq('post_id', postId).eq('user_id', userId);
-    } else {
-      await supabase.from('likes').insert({ post_id: postId, user_id: userId });
+    // Primero, busca si ya existe un "like"
+    const { data: existingLike, error: selectError } = await supabase
+      .from('likes')
+      .select('*') // Seleccionamos todo para verificar existencia
+      .eq('post_id', postId)
+      .eq('user_id', userId)
+      .maybeSingle();
+
+    if (selectError) {
+      console.error('Error checking for existing like:', selectError);
+      return; // Detener la ejecución si hay un error
     }
-    get().fetchCommunityData();
+
+    // Si el "like" existe, lo borramos
+    if (existingLike) {
+      const { error: deleteError } = await supabase
+        .from('likes')
+        .delete()
+        .eq('post_id', postId) // Borrar usando la clave compuesta
+        .eq('user_id', userId);
+
+      if (deleteError) {
+        console.error('Error deleting like:', deleteError);
+      } else {
+        get().fetchCommunityData(); // Actualizar datos solo si la operación fue exitosa
+      }
+    } else {
+      // Si el "like" no existe, lo insertamos
+      const { error: insertError } = await supabase
+        .from('likes')
+        .insert({ post_id: postId, user_id: userId });
+
+      if (insertError) {
+        console.error('Error inserting like:', insertError);
+      } else {
+        get().fetchCommunityData(); // Actualizar datos solo si la operación fue exitosa
+      }
+    }
   },
   addComment: async (postId, comment) => {
     const { error } = await supabase.from('comments').insert({ content: comment.content, user_id: comment.userId, post_id: postId });

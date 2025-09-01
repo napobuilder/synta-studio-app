@@ -1,0 +1,27 @@
+[vite] connecting... client:733:9
+[vite] connected. client:827:12
+Error inserting like: 
+Object { code: "42703", details: null, hint: null, message: 'column "points" does not exist' }
+useStore.ts:117:17
+Error inserting like: 
+Object { code: "42703", details: null, hint: null, message: 'column "points" does not exist' }
+useStore.ts:117:17
+Error inserting like: 
+Object { code: "42703", details: null, hint: null, message: 'column "points" does not exist' }
+useStore.ts:117:17
+Error inserting like: 
+Object { code: "42703", details: null, hint: null, message: 'column "points" does not exist' }
+useStore.ts:117:17
+Error inserting like: 
+Object { code: "42703", details: null, hint: null, message: 'column "points" does not exist' }
+useStore.ts:117:17
+Error inserting like: 
+Object { code: "42703", details: null, hint: null, message: 'column "points" does not exist' }
+useStore.ts:117:17
+Error inserting like: 
+Object { code: "42703", details: null, hint: null, message: 'column "points" does not exist' }
+useStore.ts:117:17
+Propiedad desconocida '-moz-osx-font-smoothing'.  Declaración rechazada. all.min.css:6:192
+Error al interpretar el valor para '-webkit-text-size-adjust'.  Declaración rechazada. localhost:5173:141:29
+Propiedad desconocida '-moz-osx-font-smoothing'.  Declaración rechazada. localhost:5173:510:29
+Error al interpretar el valor para 'text-wrap'.  Declaración rechazada. localhost:5173:514:98

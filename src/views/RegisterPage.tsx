@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 
 const RegisterPage: React.FC = () => {
@@ -9,7 +9,6 @@ const RegisterPage: React.FC = () => {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState<{ type: 'error' | 'success'; text: string } | null>(null);
-    const navigate = useNavigate();
 
     const handleRegister = async (event: React.FormEvent) => {
         event.preventDefault();

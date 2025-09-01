@@ -82,7 +82,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post }) => {
                         {/* Avatar Fix: Container div creates the circle and is immune to global img styles */}
                         <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200">
                             <img 
-                                src={user.avatar_url || '/assets/default-avatar.svg'} 
+                                src={user.avatar_url || ''} 
                                 alt={user.full_name || 'Avatar de usuario'} 
                                 className="w-full h-full object-cover" 
                             />
